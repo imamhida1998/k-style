@@ -14,7 +14,7 @@ type TransaksiRepo interface {
 	UpdateStatusTransaksiById(id, userId, status string) error
 	GetTransaksiByStatus(status string) (res model.Transaksi, err error)
 	GetAllTransaksi() (res model.Transaksi, err error)
-	GetTransaksiByStatusUserId(status, userId string) (res model.Transaksi, err error)
+	GetTransaksiByStatusUserId(page int, size int, status, userId string) (res model.Transaksi, err error)
 }
 type repoTransaksi struct {
 }
@@ -185,7 +185,8 @@ func (t *repoTransaksi) GetAllTransaksi() (res model.Transaksi, err error) {
 	return res, nil
 }
 
-func (t *repoTransaksi) GetTransaksiByStatusUserId(status, userId string) (res model.Transaksi, err error) {
+func (t *repoTransaksi) GetTransaksiByStatusUserId(page int, size int, status, userId string) (res model.Transaksi, err error) {
+
 	query := `
 	select 
 			id,
@@ -200,11 +201,13 @@ func (t *repoTransaksi) GetTransaksiByStatusUserId(status, userId string) (res m
 			status = ?
 	and
 			userId = ?
+	limit  ?
+	offset ?
 	order by
 			created_at
 	desc`
-
-	result, err := db.MySQL.Query(query, status)
+	NoPage := (page - 1) * size
+	result, err := db.MySQL.Query(query, status, size, NoPage)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return res, errors.New("tidak ada transaksi")
