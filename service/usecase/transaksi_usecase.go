@@ -15,6 +15,7 @@ type Transaksi interface {
 	CreateTransaksi(idUser string, req *request.CreateTransaksi) (res *response.CreateTransaksi, err error)
 	PaymentTransaksi(userId string, req *request.PaymentTransaksi) error
 	CancelTransaksi(transaksiId string, user model.User) error
+	GetListPayment(UserId, Status string, page int, size int) (res model.Transaksi, err error)
 }
 
 type transaksiUsercase struct {
@@ -103,8 +104,13 @@ func (t *transaksiUsercase) CancelTransaksi(transaksiId string, user model.User)
 	return nil
 }
 
-// func (t *transaksiUsercase) ListPaymentById(UserId string) error {
+func (t *transaksiUsercase) GetListPayment(UserId, Status string, page int, size int) (res model.Transaksi, err error) {
 
-// 	t.tx.GetTransaksiByStatusUserId()
+	res, err = t.tx.GetTransaksiByStatusUserId(page, size, Status, UserId)
+	if err != nil {
+		return res, err
+	}
 
-// }
+	return res, nil
+
+}
