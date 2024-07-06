@@ -7,9 +7,25 @@ import (
 	"k-style/service/usecase"
 	"k-style/util"
 
-	"github.com/labstack/echo"
+	_ "k-style/docs"
+
+	"github.com/labstack/echo/v4"
 )
 
+// @title Example API
+// @version 1.0
+// @description This is a sample server.
+// @termsOfService http://example.com/terms/
+// @contact.name API Support
+// @contact.url http://example.com/contact/
+// @contact.email support@example.com
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @host localhost:3000
+// @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	e := echo.New()
 	db.InitDB()
@@ -25,6 +41,9 @@ func main() {
 
 	delivery.Route(e, transaksiUsecase, productUsecase, userUsercase, jwtAuth)
 
-	e.Start(":8000")
+	err := e.Start("0.0.0.0:3000")
+	if err != nil {
+		return
+	}
 
 }

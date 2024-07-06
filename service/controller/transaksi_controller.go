@@ -6,7 +6,7 @@ import (
 	"k-style/service/usecase"
 	"net/http"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type transaksiController struct {
@@ -17,6 +17,13 @@ func NewHandlerTransaksi(transaksi usecase.Transaksi) *transaksiController {
 	return &transaksiController{transaksi}
 }
 
+// PaymentTransaksi handles example endpoint
+// @Summary Get example
+// @Description Get example
+// @ID get-example
+// @Produce json
+// @Success 200 {string} string "ok"
+// @Router /example [get]
 func (t *transaksiController) PaymentTransaksi(c echo.Context) error {
 	var input request.PaymentTransaksi
 
@@ -43,6 +50,16 @@ func (t *transaksiController) PaymentTransaksi(c echo.Context) error {
 	return c.JSON(http.StatusBadRequest, resp)
 }
 
+// CancelTransaksi godoc
+// @Summary Cancal Transaksi
+// @Description Cancal Order pada product
+// @Accept  application/json
+// @Security BearerAuth
+// @Produce  json
+// @Param  data body request.PaymentTransaksi true "insert data"
+// @Success 200 {object} interface{}
+// @Router /api/users/payment/create [POST]
+// @Tags Order Management
 func (t *transaksiController) CancelTransaksi(c echo.Context) error {
 	var input request.PaymentTransaksi
 

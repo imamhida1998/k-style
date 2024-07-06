@@ -7,9 +7,19 @@ import (
 	"strings"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
+
+	// _ "github.com/swaggo/echo-swagger/example/docs"
+	_ "k-style/docs"
 )
 
+// @title Example API
+// @version 1.0
+// @description This is a sample server.
+// @host localhost:8080
+// @BasePath /
 func Route(
 	e *echo.Echo,
 	transaksi usecase.Transaksi,
@@ -21,11 +31,20 @@ func Route(
 	handler := controller.NewHandlerUser(userUsecase)
 	handlerProduct := controller.NewHandlerProduct(productUsecase)
 	handlerTransaksi := controller.NewHandlerTransaksi(transaksi)
-
+	e.Use(middleware.Recover())
 	api := e.Group("/api")
 
 	api.POST("/register", handler.RegistrationDataUser)
 	api.POST("/login", handler.Login)
+	api.GET("/swagger/*any", echoSwagger.WrapHandler)
+	// api.Use(middleware.GzipWithConfig(middleware.GzipConfig{
+	// 	Skipper: func(c echo.Context) bool {
+	// 		if strings.Contains(c.Request().URL.Path, "swagger") {
+	// 			return true
+	// 		}
+	// 		return false
+	// 	},
+	// }))
 	// api.GET("/product/:id", handler.Login)
 
 	admin := api.Group("/admin")

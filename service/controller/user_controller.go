@@ -6,7 +6,7 @@ import (
 	"k-style/service/usecase"
 	"net/http"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type userController struct {
@@ -17,6 +17,15 @@ func NewHandlerUser(user usecase.Users) *userController {
 	return &userController{user}
 }
 
+// Registers godoc
+// @Summary Register Akun
+// @Description Mendaftar Akun
+// @Accept  application/json
+// @Produce  json
+// @Param  data body request.Register true "insert data"
+// @Success 200 {object} interface{}
+// @Router /api/register [POST]
+// @Tags Register
 func (h *userController) RegistrationDataUser(c echo.Context) error {
 	var input request.Register
 
@@ -38,6 +47,15 @@ func (h *userController) RegistrationDataUser(c echo.Context) error {
 
 }
 
+// Login godoc
+// @Summary Login Akun
+// @Description Login Akun untuk mengorder
+// @Accept  application/json
+// @Produce  json
+// @Param  data body request.Login true "insert data"
+// @Success 200 {object} interface{}
+// @Router /api/login [POST]
+// @Tags Login
 func (h *userController) Login(c echo.Context) error {
 	var input request.Login
 
@@ -64,6 +82,15 @@ func (h *userController) Login(c echo.Context) error {
 
 }
 
+// Login godoc
+// @Summary Login Akun
+// @Description Login Akun untuk mengorder
+// @Accept  application/json
+// @Produce  json
+// @Security BearerAuth
+// @Success 200 {object} interface{}
+// @Router /api/admin/ [GET]
+// @Tags Customer Management
 func (h *userController) DetailUser(c echo.Context) error {
 
 	currentUser := c.Get("CurrentUser").(model.User)
@@ -77,6 +104,16 @@ func (h *userController) DetailUser(c echo.Context) error {
 
 }
 
+// Login godoc
+// @Summary Login Akun
+// @Description Login Akun untuk mengorder
+// @Accept  application/json
+// @Produce  json
+// @Security BearerAuth
+// @Param  data body request.Login true "insert data"
+// @Success 200 {object} interface{}
+// @Router /api/admin/update [POST]
+// @Tags Customer Management
 func (h *userController) UpdateUser(c echo.Context) error {
 	var input request.UpdateUser
 	currentUser := c.Get("CurrentUser").(model.User)

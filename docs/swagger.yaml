@@ -1,0 +1,170 @@
+basePath: /
+definitions:
+  request.Login:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  request.PaymentTransaksi:
+    properties:
+      amount:
+        type: integer
+      transaksiId:
+        type: string
+    type: object
+  request.Register:
+    properties:
+      email:
+        type: string
+      fullname:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: http://example.com/contact/
+  description: This is a sample server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://example.com/terms/
+  title: Example API
+  version: "1.0"
+paths:
+  /api/admin/:
+    get:
+      consumes:
+      - application/json
+      description: Login Akun untuk mengorder
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Login Akun
+      tags:
+      - Customer Management
+  /api/admin/update:
+    post:
+      consumes:
+      - application/json
+      description: Login Akun untuk mengorder
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Login Akun
+      tags:
+      - Customer Management
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Login Akun untuk mengorder
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      summary: Login Akun
+      tags:
+      - Login
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      description: Mendaftar Akun
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      summary: Register Akun
+      tags:
+      - Register
+  /api/users/payment/create:
+    post:
+      consumes:
+      - application/json
+      description: Cancal Order pada product
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.PaymentTransaksi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Cancal Transaksi
+      tags:
+      - Order Management
+  /example:
+    get:
+      description: Get example
+      operationId: get-example
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get example
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
