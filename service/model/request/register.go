@@ -5,5 +5,5 @@ type Register struct {
 	Fullname string `json:"fullname"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	TypeRole string `json:"role"`
+	RoleId   int    `json:"roleId"`
 }

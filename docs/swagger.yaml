@@ -1,5 +1,31 @@
 basePath: /
 definitions:
+  request.AcceptTransaksi:
+    properties:
+      transaksiId:
+        type: string
+    type: object
+  request.CancelTransaksi:
+    properties:
+      transaksiId:
+        type: string
+    type: object
+  request.CreateProduct:
+    properties:
+      harga:
+        type: integer
+      kategori:
+        type: string
+      nama:
+        type: string
+    type: object
+  request.CreateTransaksi:
+    properties:
+      productId:
+        type: string
+      quantity:
+        type: integer
+    type: object
   request.Login:
     properties:
       password:
@@ -22,9 +48,20 @@ definitions:
         type: string
       password:
         type: string
-      role:
-        type: string
+      roleId:
+        type: integer
       username:
+        type: string
+    type: object
+  request.UpdateProduct:
+    properties:
+      harga:
+        type: integer
+      kategori:
+        type: string
+      nama:
+        type: string
+      productId:
         type: string
     type: object
 host: localhost:3000
@@ -33,43 +70,26 @@ info:
     email: support@example.com
     name: API Support
     url: http://example.com/contact/
-  description: This is a sample server.
+  description: Document API Test K-Style Hub,
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://example.com/terms/
-  title: Example API
+  title: Document API
   version: "1.0"
 paths:
-  /api/admin/:
-    get:
-      consumes:
-      - application/json
-      description: Login Akun untuk mengorder
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Login Akun
-      tags:
-      - Customer Management
-  /api/admin/update:
+  /api/admin/product/create:
     post:
       consumes:
       - application/json
-      description: Login Akun untuk mengorder
+      description: Membuat Product yang akan dijual
       parameters:
       - description: insert data
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/request.Login'
+          $ref: '#/definitions/request.CreateProduct'
       produces:
       - application/json
       responses:
@@ -79,9 +99,89 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Login Akun
+      summary: Create Product
       tags:
-      - Customer Management
+      - Order Management
+  /api/admin/product/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Menghapus Product
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      summary: Delete Product
+      tags:
+      - Order Management
+  /api/admin/product/list:
+    get:
+      consumes:
+      - application/json
+      description: List Data Product
+      parameters:
+      - default: 0
+        description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 0
+        description: Items per page
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: Filter kategori
+        in: query
+        name: kategori
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List Product
+      tags:
+      - Order Management
+  /api/admin/product/update:
+    put:
+      consumes:
+      - application/json
+      description: Merubah Product yang akan dijual
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Product
+      tags:
+      - Order Management
   /api/login:
     post:
       consumes:
@@ -103,12 +203,12 @@ paths:
             type: object
       summary: Login Akun
       tags:
-      - Login
+      - Authentikasi Management
   /api/register:
     post:
       consumes:
       - application/json
-      description: Mendaftar Akun
+      description: Untuk menentukan RoleId 1 adalah Admin dan 2 Adalah Customer
       parameters:
       - description: insert data
         in: body
@@ -125,12 +225,101 @@ paths:
             type: object
       summary: Register Akun
       tags:
-      - Register
+      - Authentikasi Management
+  /api/users/detail:
+    get:
+      consumes:
+      - application/json
+      description: Get Detail Data Akun
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Detail Akun
+      tags:
+      - Customer Management
+  /api/users/payment/accept-payment:
+    put:
+      consumes:
+      - application/json
+      description: Hanya Role Admin yang dapat menggunakan akses ini
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.AcceptTransaksi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Accept Payment Transaction
+      tags:
+      - Customer Management
   /api/users/payment/create:
     post:
       consumes:
       - application/json
+      description: Create Transaksi
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateTransaksi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Order Product
+      tags:
+      - Customer Management
+  /api/users/payment/delete:
+    delete:
+      consumes:
+      - application/json
       description: Cancal Order pada product
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CancelTransaksi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Cancal Transaksi
+      tags:
+      - Customer Management
+  /api/users/payment/update:
+    put:
+      consumes:
+      - application/json
+      description: Payment Order pada product
       parameters:
       - description: insert data
         in: body
@@ -147,21 +336,73 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Cancal Transaksi
+      summary: Payment Order
       tags:
-      - Order Management
-  /example:
+      - Customer Management
+  /api/users/transaksi/list:
     get:
-      description: Get example
-      operationId: get-example
+      consumes:
+      - application/json
+      description: Cancal Order pada product
+      parameters:
+      - default: 0
+        description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 0
+        description: Items per page
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: Filter status
+        in: query
+        name: status
+        required: true
+        type: string
+      - description: Filter userId
+        in: query
+        name: user_id
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: ok
+          description: OK
           schema:
-            type: string
-      summary: Get example
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get List Transaksi By Status
+      tags:
+      - Customer Management
+  /api/users/update:
+    put:
+      consumes:
+      - application/json
+      description: Admin Dapat merubah role pada akun, Admin tidak dapat merubah role
+        pada akun
+      parameters:
+      - description: insert data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Akun
+      tags:
+      - Customer Management
 securityDefinitions:
   BearerAuth:
     in: header

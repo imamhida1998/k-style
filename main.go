@@ -12,9 +12,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// @title Example API
+// @title Document API
 // @version 1.0
-// @description This is a sample server.
+// @description Document API Test K-Style Hub,
 // @termsOfService http://example.com/terms/
 // @contact.name API Support
 // @contact.url http://example.com/contact/

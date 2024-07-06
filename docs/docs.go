@@ -24,14 +24,14 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/admin/": {
-            "get": {
+        "/api/admin/product/create": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Login Akun untuk mengorder",
+                "description": "Membuat Product yang akan dijual",
                 "consumes": [
                     "application/json"
                 ],
@@ -39,9 +39,20 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Customer Management"
+                    "Order Management"
                 ],
-                "summary": "Login Akun",
+                "summary": "Create Product",
+                "parameters": [
+                    {
+                        "description": "insert data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateProduct"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -52,14 +63,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/admin/update": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Login Akun untuk mengorder",
+        "/api/admin/product/delete": {
+            "delete": {
+                "description": "Menghapus Product",
                 "consumes": [
                     "application/json"
                 ],
@@ -67,9 +73,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Customer Management"
+                    "Order Management"
                 ],
-                "summary": "Login Akun",
+                "summary": "Delete Product",
                 "parameters": [
                     {
                         "description": "insert data",
@@ -77,7 +83,98 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.Login"
+                            "$ref": "#/definitions/request.UpdateProduct"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/admin/product/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List Data Product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "List Product",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Items per page",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter kategori",
+                        "name": "kategori",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/admin/product/update": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Merubah Product yang akan dijual",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Update Product",
+                "parameters": [
+                    {
+                        "description": "insert data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateProduct"
                         }
                     }
                 ],
@@ -101,7 +198,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Login"
+                    "Authentikasi Management"
                 ],
                 "summary": "Login Akun",
                 "parameters": [
@@ -127,7 +224,7 @@ const docTemplate = `{
         },
         "/api/register": {
             "post": {
-                "description": "Mendaftar Akun",
+                "description": "Untuk menentukan RoleId 1 adalah Admin dan 2 Adalah Customer",
                 "consumes": [
                     "application/json"
                 ],
@@ -135,7 +232,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Register"
+                    "Authentikasi Management"
                 ],
                 "summary": "Register Akun",
                 "parameters": [
@@ -159,8 +256,114 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/users/detail": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get Detail Data Akun",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer Management"
+                ],
+                "summary": "Get Detail Akun",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/payment/accept-payment": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Hanya Role Admin yang dapat menggunakan akses ini",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer Management"
+                ],
+                "summary": "Accept Payment Transaction",
+                "parameters": [
+                    {
+                        "description": "insert data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.AcceptTransaksi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "/api/users/payment/create": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create Transaksi",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer Management"
+                ],
+                "summary": "Order Product",
+                "parameters": [
+                    {
+                        "description": "insert data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateTransaksi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/payment/delete": {
+            "delete": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -174,9 +377,48 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order Management"
+                    "Customer Management"
                 ],
                 "summary": "Cancal Transaksi",
+                "parameters": [
+                    {
+                        "description": "insert data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CancelTransaksi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/payment/update": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Payment Order pada product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer Management"
+                ],
+                "summary": "Payment Order",
                 "parameters": [
                     {
                         "description": "insert data",
@@ -198,19 +440,99 @@ const docTemplate = `{
                 }
             }
         },
-        "/example": {
+        "/api/users/transaksi/list": {
             "get": {
-                "description": "Get example",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cancal Order pada product",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get example",
-                "operationId": "get-example",
+                "tags": [
+                    "Customer Management"
+                ],
+                "summary": "Get List Transaksi By Status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Items per page",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter status",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter userId",
+                        "name": "user_id",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "ok",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/update": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Admin Dapat merubah role pada akun, Admin tidak dapat merubah role pada akun",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer Management"
+                ],
+                "summary": "Update Akun",
+                "parameters": [
+                    {
+                        "description": "insert data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
                         }
                     }
                 }
@@ -218,6 +540,47 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "request.AcceptTransaksi": {
+            "type": "object",
+            "properties": {
+                "transaksiId": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.CancelTransaksi": {
+            "type": "object",
+            "properties": {
+                "transaksiId": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.CreateProduct": {
+            "type": "object",
+            "properties": {
+                "harga": {
+                    "type": "integer"
+                },
+                "kategori": {
+                    "type": "string"
+                },
+                "nama": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.CreateTransaksi": {
+            "type": "object",
+            "properties": {
+                "productId": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
         "request.Login": {
             "type": "object",
             "properties": {
@@ -252,10 +615,27 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
-                "role": {
-                    "type": "string"
+                "roleId": {
+                    "type": "integer"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.UpdateProduct": {
+            "type": "object",
+            "properties": {
+                "harga": {
+                    "type": "integer"
+                },
+                "kategori": {
+                    "type": "string"
+                },
+                "nama": {
+                    "type": "string"
+                },
+                "productId": {
                     "type": "string"
                 }
             }
@@ -276,8 +656,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:3000",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Example API",
-	Description:      "This is a sample server.",
+	Title:            "Document API",
+	Description:      "Document API Test K-Style Hub,",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

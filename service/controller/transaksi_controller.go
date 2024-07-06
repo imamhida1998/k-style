@@ -18,13 +18,16 @@ func NewHandlerTransaksi(transaksi usecase.Transaksi) *transaksiController {
 	return &transaksiController{transaksi}
 }
 
-// PaymentTransaksi handles example endpoint
-// @Summary Get example
-// @Description Get example
-// @ID get-example
-// @Produce json
-// @Success 200 {string} string "ok"
-// @Router /example [get]
+// PaymentTransaksi godoc
+// @Summary Payment Order
+// @Description Payment Order pada product
+// @Accept  application/json
+// @Security BearerAuth
+// @Produce  json
+// @Param  data body request.PaymentTransaksi true "insert data"
+// @Success 200 {object} interface{}
+// @Router /api/users/payment/update [PUT]
+// @Tags Customer Management
 func (t *transaksiController) PaymentTransaksi(c echo.Context) error {
 	var input request.PaymentTransaksi
 
@@ -57,12 +60,12 @@ func (t *transaksiController) PaymentTransaksi(c echo.Context) error {
 // @Accept  application/json
 // @Security BearerAuth
 // @Produce  json
-// @Param  data body request.PaymentTransaksi true "insert data"
+// @Param  data body request.CancelTransaksi true "insert data"
 // @Success 200 {object} interface{}
-// @Router /api/users/payment/create [POST]
-// @Tags Order Management
+// @Router /api/users/payment/delete [DELETE]
+// @Tags Customer Management
 func (t *transaksiController) CancelTransaksi(c echo.Context) error {
-	var input request.PaymentTransaksi
+	var input request.CancelTransaksi
 
 	currentUser := c.Get("CurrentUser").(model.User)
 	err := c.Bind(&input)
@@ -87,6 +90,19 @@ func (t *transaksiController) CancelTransaksi(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
+// CancelTransaksi godoc
+// @Summary Get List Transaksi By Status
+// @Description Cancal Order pada product
+// @Accept  application/json
+// @Security BearerAuth
+// @Produce  json
+// @Param  page query int true "Page number" default(0)
+// @Param  size query int true "Items per page" default(0)
+// @Param  status query string true "Filter status"
+// @Param  user_id query string false "Filter userId"
+// @Success 200 {object} interface{}
+// @Router /api/users/transaksi/list [GET]
+// @Tags Customer Management
 func (t *transaksiController) GetListPayment(c echo.Context) error {
 	// var input request.PaymentTransaksi
 
@@ -97,6 +113,10 @@ func (t *transaksiController) GetListPayment(c echo.Context) error {
 	sizePage, _ := strconv.Atoi(size)
 	noPage, _ := strconv.Atoi(page)
 	currentUser := c.Get("CurrentUser").(model.User)
+
+	if userId == "" {
+		userId = currentUser.Id
+	}
 
 	if currentUser.Role != "Admin" {
 		res, err := t.transaksi.GetListPayment(userId, status, noPage, sizePage)
@@ -126,4 +146,72 @@ func (t *transaksiController) GetListPayment(c echo.Context) error {
 		return c.JSON(http.StatusOK, resp)
 	}
 
+}
+
+// PaymentTransaksi godoc
+// @Summary Order Product
+// @Description Create Transaksi
+// @Accept  application/json
+// @Security BearerAuth
+// @Produce  json
+// @Param  data body request.CreateTransaksi true "insert data"
+// @Success 200 {object} interface{}
+// @Router /api/users/payment/create [POST]
+// @Tags Customer Management
+func (t *transaksiController) CreateTransaksi(c echo.Context) error {
+	var input request.CreateTransaksi
+
+	currentUser := c.Get("CurrentUser").(model.User)
+	err := c.Bind(&input)
+	if err != nil {
+		MessageError := echo.Map{"errors": err.Error()}
+		return c.JSON(http.StatusBadRequest, MessageError)
+	}
+
+	res, err := t.transaksi.CreateTransaksi(currentUser.Id, &input)
+	if err != nil {
+		MessageError := echo.Map{"errors": err.Error()}
+		return c.JSON(http.StatusBadRequest, MessageError)
+	}
+	resp := echo.Map{
+		"message": "success",
+		"status":  200,
+		"data":    res,
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+// AcceptTransaksi godoc
+// @Summary Accept Payment Transaction
+// @Description Hanya Role Admin yang dapat menggunakan akses ini
+// @Accept  application/json
+// @Security BearerAuth
+// @Produce  json
+// @Param  data body request.AcceptTransaksi true "insert data"
+// @Success 200 {object} interface{}
+// @Router /api/users/payment/accept-payment [PUT]
+// @Tags Customer Management
+func (t *transaksiController) AcceptTransaksi(c echo.Context) error {
+	var input request.AcceptTransaksi
+
+	currentUser := c.Get("CurrentUser").(model.User)
+	err := c.Bind(&input)
+	if err != nil {
+		MessageError := echo.Map{"errors": err.Error()}
+		return c.JSON(http.StatusBadRequest, MessageError)
+	}
+
+	res, err := t.transaksi.AcceptPayment(input.TransaksiId, currentUser.Id)
+	if err != nil {
+		MessageError := echo.Map{"errors": err.Error()}
+		return c.JSON(http.StatusBadRequest, MessageError)
+	}
+	resp := echo.Map{
+		"message": "success",
+		"status":  200,
+		"data":    res,
+	}
+
+	return c.JSON(http.StatusOK, resp)
 }

@@ -6,6 +6,7 @@ import (
 	"k-style/service/model/request"
 	"k-style/service/model/response"
 	"k-style/service/repository"
+	"k-style/util"
 
 	"github.com/google/uuid"
 )
@@ -32,11 +33,16 @@ func (u *userUsercase) Register(params *request.Register) error {
 		return err
 	}
 
+	role, err := util.GetRoleByTypeId(params.RoleId)
+	if err != nil {
+		return err
+	}
+
 	return u.user.Registrasi(&model.User{
 		Id:       id.String(),
 		Username: params.Username,
 		Fullname: params.Fullname,
-		Role:     "Customer",
+		Role:     role,
 		Email:    params.Email,
 		Password: params.Password,
 	})
@@ -57,7 +63,7 @@ func (u *userUsercase) Login(params *request.Login) (res *response.Login, err er
 	}
 
 	resp := &response.Login{
-		AccessToken: token,
+		AccessToken: "Bearer " + token,
 	}
 
 	return resp, nil

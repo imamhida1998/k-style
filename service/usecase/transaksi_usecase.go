@@ -15,7 +15,8 @@ type Transaksi interface {
 	CreateTransaksi(idUser string, req *request.CreateTransaksi) (res *response.CreateTransaksi, err error)
 	PaymentTransaksi(userId string, req *request.PaymentTransaksi) error
 	CancelTransaksi(transaksiId string, user model.User) error
-	GetListPayment(UserId, Status string, page int, size int) (res model.Transaksi, err error)
+	GetListPayment(UserId, Status string, page int, size int) (res []model.Transaksi, err error)
+	AcceptPayment(transaksiId, userId string) (msg *response.AcceptPayment, err error)
 }
 
 type transaksiUsercase struct {
@@ -39,11 +40,12 @@ func (t *transaksiUsercase) CreateTransaksi(idUser string, req *request.CreateTr
 		return nil, err
 	}
 
-	total := req.Quantity + product.Harga
+	total := req.Quantity * product.Harga
 
 	err = t.tx.CreateTransaksi(&model.Transaksi{
 		Id:          id.String(),
 		UserId:      idUser,
+		ProductId:   product.Id,
 		NamaProduct: product.Nama,
 		Status:      "unpaid",
 		Total:       total,
@@ -104,7 +106,7 @@ func (t *transaksiUsercase) CancelTransaksi(transaksiId string, user model.User)
 	return nil
 }
 
-func (t *transaksiUsercase) GetListPayment(UserId, Status string, page int, size int) (res model.Transaksi, err error) {
+func (t *transaksiUsercase) GetListPayment(UserId, Status string, page int, size int) (res []model.Transaksi, err error) {
 
 	res, err = t.tx.GetTransaksiByStatusUserId(page, size, Status, UserId)
 	if err != nil {
@@ -112,5 +114,40 @@ func (t *transaksiUsercase) GetListPayment(UserId, Status string, page int, size
 	}
 
 	return res, nil
+
+}
+
+func (t *transaksiUsercase) AcceptPayment(transaksiId, userId string) (msg *response.AcceptPayment, err error) {
+
+	user, err := t.user.GetUsersById(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.Role != "Admin" {
+		return nil, errors.New("anda tidak akses untuk layanan ini!")
+	}
+
+	transaksi, err := t.tx.GetTransaksiById(transaksiId)
+	if err != nil {
+		return nil, err
+	}
+
+	product, err := t.product.GetProductById(transaksi.ProductId)
+	if err != nil {
+		return nil, err
+	}
+
+	count := transaksi.Total / product.Harga
+
+	err = t.tx.UpdateStatusTransaksiById(transaksiId, userId, "completed")
+	if err != nil {
+		return nil, err
+	}
+
+	return &response.AcceptPayment{
+			Message: fmt.Sprintf("Terimakasih Telah membeli %s sebanyak %d", product.Nama, count),
+		},
+		nil
 
 }

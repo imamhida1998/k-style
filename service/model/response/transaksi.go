@@ -5,3 +5,7 @@ type CreateTransaksi struct {
 	Total       int    `json:"total"`
 	// Amount      int    `json:"amount"`
 }
+
+type AcceptPayment struct {
+	Message string
+}

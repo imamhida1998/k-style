@@ -52,12 +52,14 @@ func Route(
 	admin.GET("/", handler.DetailUser)
 	// admin.DELETE("/delete", handler.Login)
 	admin.PUT("/update", handler.UpdateUser)
-	admin.POST("/delete-user", handler.DetailUser)
+	admin.DELETE("/delete-user", handler.DetailUser)
 	admin.GET("/list/payment", handlerTransaksi.GetListPayment)
 
 	productAdmin := admin.Group("/product")
-	productAdmin.PUT("/update", handler.UpdateUser)
+	productAdmin.PUT("/update", handlerProduct.UpdateProduct)
 	productAdmin.POST("/create", handlerProduct.CreateProduct)
+	productAdmin.GET("/list", handlerProduct.GetListProduct)
+	productAdmin.DELETE("/delete", handlerProduct.DeleteProduct)
 	// admin.GET("/list-payment", handler.DetailUser)
 
 	user := api.Group("/users")
@@ -72,9 +74,10 @@ func Route(
 	// user.GET("/list", handler.DetailUser)
 
 	payment := user.Group("/payment")
-	payment.POST("/list", handlerTransaksi.PaymentTransaksi)
-	payment.POST("/create", handlerTransaksi.PaymentTransaksi)
+	payment.POST("/create", handlerTransaksi.CreateTransaksi)
+	payment.PUT("/update", handlerTransaksi.PaymentTransaksi)
 	payment.DELETE("/delete", handlerTransaksi.CancelTransaksi)
+	payment.PUT("/accept-payment", handlerTransaksi.AcceptTransaksi)
 
 	tx := user.Group("/transaksi")
 	tx.GET("/list", handlerTransaksi.GetListPayment)

@@ -14,6 +14,7 @@ type UserRepo interface {
 	Login(input *request.Login) (res model.User, err error)
 	UpdateDataUsers(id string, data *model.User) error
 	GetUsersByEmail(email string) (res model.User, err error)
+	GetUsersById(id string) (res model.User, err error)
 }
 
 type repoUser struct {
@@ -128,4 +129,32 @@ func (r *repoUser) UpdateDataUsers(id string, data *model.User) error {
 		return err
 	}
 	return nil
+}
+
+func (r *repoUser) GetUsersById(id string) (res model.User, err error) {
+	query := `select id,fullname,username,password,role,email,created_at  from users where id = ?`
+	rows, err := db.MySQL.Query(query, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return res, nil
+		}
+		return res, err
+	}
+
+	for rows.Next() {
+		errx := rows.Scan(
+			&res.Id,
+			&res.Fullname,
+			&res.Username,
+			&res.Password,
+			&res.Role,
+			&res.Email,
+			&res.CreatedAt)
+		if errx != nil {
+			return res, errx
+		}
+
+	}
+	return res, nil
+
 }

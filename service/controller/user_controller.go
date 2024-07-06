@@ -19,13 +19,13 @@ func NewHandlerUser(user usecase.Users) *userController {
 
 // Registers godoc
 // @Summary Register Akun
-// @Description Mendaftar Akun
+// @Description Untuk menentukan RoleId 1 adalah Admin dan 2 Adalah Customer
 // @Accept  application/json
 // @Produce  json
 // @Param  data body request.Register true "insert data"
 // @Success 200 {object} interface{}
 // @Router /api/register [POST]
-// @Tags Register
+// @Tags Authentikasi Management
 func (h *userController) RegistrationDataUser(c echo.Context) error {
 	var input request.Register
 
@@ -55,21 +55,19 @@ func (h *userController) RegistrationDataUser(c echo.Context) error {
 // @Param  data body request.Login true "insert data"
 // @Success 200 {object} interface{}
 // @Router /api/login [POST]
-// @Tags Login
+// @Tags Authentikasi Management
 func (h *userController) Login(c echo.Context) error {
 	var input request.Login
 
 	err := c.Bind(&input)
 	if err != nil {
 		MessageError := echo.Map{"errors": err.Error()}
-
 		return c.JSON(http.StatusBadRequest, MessageError)
 	}
 
 	res, err := h.userUsecase.Login(&input)
 	if err != nil {
 		MessageError := echo.Map{"errors": err.Error()}
-		c.JSON(http.StatusInternalServerError, MessageError)
 		return c.JSON(http.StatusBadRequest, MessageError)
 	}
 
@@ -83,13 +81,13 @@ func (h *userController) Login(c echo.Context) error {
 }
 
 // Login godoc
-// @Summary Login Akun
-// @Description Login Akun untuk mengorder
+// @Summary Get Detail Akun
+// @Description Get Detail Data Akun
 // @Accept  application/json
 // @Produce  json
 // @Security BearerAuth
 // @Success 200 {object} interface{}
-// @Router /api/admin/ [GET]
+// @Router /api/users/detail [GET]
 // @Tags Customer Management
 func (h *userController) DetailUser(c echo.Context) error {
 
@@ -105,14 +103,14 @@ func (h *userController) DetailUser(c echo.Context) error {
 }
 
 // Login godoc
-// @Summary Login Akun
-// @Description Login Akun untuk mengorder
+// @Summary Update Akun
+// @Description Admin Dapat merubah role pada akun, Admin tidak dapat merubah role pada akun
 // @Accept  application/json
 // @Produce  json
 // @Security BearerAuth
 // @Param  data body request.Login true "insert data"
 // @Success 200 {object} interface{}
-// @Router /api/admin/update [POST]
+// @Router /api/users/update [PUT]
 // @Tags Customer Management
 func (h *userController) UpdateUser(c echo.Context) error {
 	var input request.UpdateUser

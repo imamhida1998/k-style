@@ -12,3 +12,8 @@ type UpdateProduct struct {
 	Kategori  string `json:"kategori"`
 	Harga     int    `json:"harga"`
 }
+
+type DeleteProduct struct {
+	ProductId string `json:"productId"`
+	UserId    string `json:"userId"`
+}
