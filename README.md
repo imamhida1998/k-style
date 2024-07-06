@@ -9,6 +9,13 @@ docker run  -d -p 3000:3000 kstyle:1.0
 click your browser and go to http://localhost:3000/api/swagger/index.html for document API
 ```
 
+## case order for transaction
+1 Create Register if you have account
+2 Login
+3 Click Payment if you know the product_id to be purchased if there is one then input until you get a pending message
+4 If there is no product list please list the product first
+5 If done for payment waiting Admin accpet your payment or you create account Admin for Accept payment
+
 ## Add your files
 
 - [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
