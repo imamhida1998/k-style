@@ -17,3 +17,7 @@ type CancelTransaksi struct {
 type AcceptTransaksi struct {
 	TransaksiId string `json:"transaksiId"`
 }
+
+type GetTransaksiId struct {
+	TransaksiId string `json:"transaksiId"`
+}

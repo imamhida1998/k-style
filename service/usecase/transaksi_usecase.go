@@ -17,6 +17,7 @@ type Transaksi interface {
 	CancelTransaksi(transaksiId string, user model.User) error
 	GetListPayment(UserId, Status string, page int, size int) (res []model.Transaksi, err error)
 	AcceptPayment(transaksiId, userId string) (msg *response.AcceptPayment, err error)
+	GetTransaksiById(transaksiId string) (res *response.DetailTransaksi, err error)
 }
 
 type transaksiUsercase struct {
@@ -149,5 +150,30 @@ func (t *transaksiUsercase) AcceptPayment(transaksiId, userId string) (msg *resp
 			Message: fmt.Sprintf("Terimakasih Telah membeli %s sebanyak %d", product.Nama, count),
 		},
 		nil
+
+}
+
+func (t *transaksiUsercase) GetTransaksiById(transaksiId string) (res *response.DetailTransaksi, err error) {
+
+	transaksi, err := t.tx.GetTransaksiById(transaksiId)
+	if err != nil {
+		return nil, err
+	}
+
+	product, err := t.product.GetProductById(transaksi.ProductId)
+	if err != nil {
+		return nil, err
+	}
+
+	jmlh := transaksi.Total / product.Harga
+
+	resp := &response.DetailTransaksi{
+		NamaProduct:     product.Nama,
+		StatusTransaksi: transaksi.Status,
+		TotalHarga:      transaksi.Total,
+		JumlahPembelian: jmlh,
+	}
+
+	return resp, nil
 
 }

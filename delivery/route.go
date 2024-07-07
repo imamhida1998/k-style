@@ -78,6 +78,7 @@ func Route(
 	payment.PUT("/update", handlerTransaksi.PaymentTransaksi)
 	payment.DELETE("/delete", handlerTransaksi.CancelTransaksi)
 	payment.PUT("/accept-payment", handlerTransaksi.AcceptTransaksi)
+	payment.GET("/transaksi-detail", handlerTransaksi.GetTransaksiId)
 
 	tx := user.Group("/transaksi")
 	tx.GET("/list", handlerTransaksi.GetListPayment)

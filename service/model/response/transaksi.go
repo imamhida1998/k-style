@@ -9,3 +9,10 @@ type CreateTransaksi struct {
 type AcceptPayment struct {
 	Message string
 }
+
+type DetailTransaksi struct {
+	NamaProduct     string `json:"namaProduct"`
+	JumlahPembelian int    `json:"jumlahPembelian"`
+	StatusTransaksi string `json:"statusTransaksi"`
+	TotalHarga      int    `json:"totalHarga"`
+}

@@ -215,3 +215,29 @@ func (t *transaksiController) AcceptTransaksi(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+// GetTransaksiId godoc
+// @Summary Detail Transaction
+// @Description Mencari detail Transaksi berdasarkan ID
+// @Accept  application/json
+// @Security BearerAuth
+// @Produce  json
+// @Param  Id query string true "Filter Transaksi By Id"
+// @Success 200 {object} interface{}
+// @Router /api/users/payment/transaksi-detail [GET]
+// @Tags Customer Management
+func (t *transaksiController) GetTransaksiId(c echo.Context) error {
+	transaksi := c.QueryParam("Id")
+	res, err := t.transaksi.GetTransaksiById(transaksi)
+	if err != nil {
+		MessageError := echo.Map{"errors": err.Error()}
+		return c.JSON(http.StatusBadRequest, MessageError)
+	}
+	resp := echo.Map{
+		"message": "success",
+		"status":  200,
+		"data":    res,
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}

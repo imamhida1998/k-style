@@ -146,6 +146,7 @@ func (t *productController) GetListProduct(c echo.Context) error {
 // @Description Menghapus Product
 // @Accept  application/json
 // @Produce  json
+// @Security BearerAuth
 // @Param  data body request.UpdateProduct true "insert data"
 // @Success 200 {object} interface{}
 // @Router /api/admin/product/delete [DELETE]

@@ -65,6 +65,11 @@ const docTemplate = `{
         },
         "/api/admin/product/delete": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Menghapus Product",
                 "consumes": [
                     "application/json"
@@ -389,6 +394,43 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/request.CancelTransaksi"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/payment/transaksi-detail": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mencari detail Transaksi berdasarkan ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer Management"
+                ],
+                "summary": "Detail Transaction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter Transaksi By Id",
+                        "name": "Id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {

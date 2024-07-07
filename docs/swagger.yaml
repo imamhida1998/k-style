@@ -121,6 +121,8 @@ paths:
           description: OK
           schema:
             type: object
+      security:
+      - BearerAuth: []
       summary: Delete Product
       tags:
       - Order Management
@@ -313,6 +315,29 @@ paths:
       security:
       - BearerAuth: []
       summary: Cancal Transaksi
+      tags:
+      - Customer Management
+  /api/users/payment/transaksi-detail:
+    get:
+      consumes:
+      - application/json
+      description: Mencari detail Transaksi berdasarkan ID
+      parameters:
+      - description: Filter Transaksi By Id
+        in: query
+        name: Id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Detail Transaction
       tags:
       - Customer Management
   /api/users/payment/update:
