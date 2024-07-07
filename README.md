@@ -3,12 +3,13 @@
 
 ## Getting started
 
+### How to Run this Service/app on Docker
+
 ```
 docker build --tag kstyle:1.0 .
 docker run  -d -p 3000:3000 kstyle:1.0
-click your browser and go to http://localhost:3000/api/swagger/index.html for document API
 ```
-
+If docker imange on docker, you can click this URL [Swagger](http://localhost:3000/api/swagger/index.html) for document API until you go to the page below
 ![View Swagger](https://github.com/imamhida1998/k-style/assets/63911715/7ddf7257-913c-44a8-aa6c-73b363b3ff06)
 
 ## case order for transaction
@@ -25,14 +26,14 @@ click your browser and go to http://localhost:3000/api/swagger/index.html for do
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/imamhida1998/be-crowdfunding.git
+git remote add origin https://github.com/imamhida1998/k-style.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.com/imamhida1998/be-crowdfunding/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.com/imamhida1998/k-style/-/settings/integrations)
 
 ## Collaborate with your team
 
