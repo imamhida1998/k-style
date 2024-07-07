@@ -8,7 +8,7 @@ docker build --tag kstyle:1.0 .
 docker run  -d -p 3000:3000 kstyle:1.0
 click your browser and go to http://localhost:3000/api/swagger/index.html for document API
 ```
-
+![View Swagger](k-style/image.png)
 ## case order for transaction
 -  Create Register if you have account
 -  Login
